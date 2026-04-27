@@ -7,6 +7,7 @@ One-command Mac setup for new developers.
 Installs and configures everything you need to start coding on a Mac:
 
 **Apps**
+- 1Password — password manager
 - Signal — encrypted messaging
 - Discord — developer communities
 - Tailscale — personal VPN / remote access
@@ -31,7 +32,7 @@ After setup, a guided tour walks you through what was installed and how to use i
 ## Usage
 
 ```bash
-git clone https://github.com/yourusername/macbequick ~/tools/macbequick
+git clone https://github.com/ZephrFish/Mac4SBQ ~/tools/macbequick
 bash ~/tools/macbequick/setup.sh
 ```
 
