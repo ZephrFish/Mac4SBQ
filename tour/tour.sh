@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# @decision: Tour is a non-interactive printed narrative — no read prompts — so it can
+# safely be sourced inside setup.sh without blocking. Written at a "day one coder" level:
+# explains the why of each tool, not just the what. Kept printable so the user can scroll
+# back and re-read without re-running setup.
+
+_tour_header() {
+    echo ""
+    echo -e "${BOLD}${CYAN}$*${RESET}"
+    echo -e "${CYAN}$(printf '─%.0s' $(seq 1 50))${RESET}"
+}
+
+_tour_item() {
+    local name="$1"; shift
+    echo -e "  ${BOLD}${WHITE}${name}${RESET}  $*"
+}
+
+print_tour() {
+    echo ""
+    echo -e "${BOLD}${WHITE}╔══════════════════════════════════════════════╗${RESET}"
+    echo -e "${BOLD}${WHITE}║       Your New Setup: A Quick Tour           ║${RESET}"
+    echo -e "${BOLD}${WHITE}╚══════════════════════════════════════════════╝${RESET}"
+
+    _tour_header "1. Apps Installed"
+    echo ""
+    _tour_item "Signal"    "End-to-end encrypted messaging. Use it for private conversations."
+    _tour_item "Discord"   "Where developer communities live. Search for servers about whatever you're learning."
+    _tour_item "Tailscale" "Creates a private network between your devices — great for accessing your home machine remotely."
+    _tour_item "iTerm2"    "A much better terminal than macOS default. Split panes, clickable links, search, and profiles."
+    _tour_item "VS Code"   "Your code editor. We configured it with a dark theme, icons, and extensions to help you code."
+
+    _tour_header "2. Your Terminal"
+    echo ""
+    echo "  Your shell is zsh — the default on modern macOS."
+    echo ""
+    echo "  We added:"
+    _tour_item "Starship"        "A smart prompt that shows your current folder, git branch, and language version."
+    _tour_item "oh-my-zsh"       "Manages shell plugins and gives you smarter tab-completion."
+    _tour_item "Autosuggestions" "As you type, you'll see a gray ghost of your last matching command. Press → to accept it."
+    _tour_item "Syntax highlight" "Commands turn green as you type if they're valid, red if they're not found."
+    echo ""
+    echo "  Shortcuts you now have:"
+    echo ""
+    echo -e "    ${BOLD}CTRL+R${RESET}     Fuzzy search your command history — type any part of a past command"
+    echo -e "    ${BOLD}CTRL+T${RESET}     Fuzzy file picker — find and paste any file path"
+    echo -e "    ${BOLD}ll${RESET}         List files with sizes, dates, and icons"
+    echo -e "    ${BOLD}cat file${RESET}   View a file with syntax highlighting"
+    echo -e "    ${BOLD}rg pattern${RESET} Search inside files fast (better grep)"
+    echo -e "    ${BOLD}tldr git${RESET}   Friendly cheat sheet for any command"
+    echo -e "    ${BOLD}mkcd name${RESET}  Create a folder and enter it in one step"
+    echo -e "    ${BOLD}serve${RESET}      Start a local web server in the current folder"
+
+    _tour_header "3. Node.js"
+    echo ""
+    echo "  nvm is installed — it lets you switch Node.js versions per project."
+    echo "  To get started with Node, run these after setup:"
+    echo ""
+    echo -e "    ${BOLD}nvm install --lts${RESET}   # install latest stable Node.js"
+    echo -e "    ${BOLD}nvm use --lts${RESET}       # activate it"
+    echo -e "    ${BOLD}node --version${RESET}      # verify"
+    echo ""
+    echo "  Why nvm instead of installing Node directly? When you work on different"
+    echo "  projects they may need different Node versions — nvm handles that painlessly."
+
+    _tour_header "4. VS Code"
+    echo ""
+    echo "  Extensions installed:"
+    echo ""
+    _tour_item "Prettier"         "Automatically formats your code on save — no more worrying about spacing."
+    _tour_item "ESLint"           "Warns you about JavaScript mistakes as you type."
+    _tour_item "GitLens"          "Shows who wrote every line of code, right inside the editor."
+    _tour_item "ErrorLens"        "Displays errors inline so you don't have to click on the squiggly lines."
+    _tour_item "Material Icons"   "Icons for every file type in the sidebar — makes navigation intuitive."
+    _tour_item "Indent Rainbow"   "Colors each level of indentation — essential for Python and YAML."
+    _tour_item "Spell Checker"    "Catches typos in your comments and strings."
+    _tour_item "Python / Go / Rust" "Language support for autocomplete, type hints, and error checking."
+    echo ""
+    echo "  Useful VS Code commands:"
+    echo ""
+    echo -e "    ${BOLD}code .${RESET}          Open VS Code in the current folder"
+    echo -e "    ${BOLD}code myfile.js${RESET}  Open a specific file"
+    echo -e "    ${BOLD}CMD+P${RESET}           Quick file search inside a project"
+    echo -e "    ${BOLD}CMD+SHIFT+P${RESET}     Command palette — search for any VS Code action"
+    echo -e "    ${BOLD}CMD+\`${RESET}           Open the integrated terminal"
+
+    _tour_header "5. Next Steps"
+    echo ""
+    echo "  Do these after setup to complete your environment:"
+    echo ""
+    echo -e "  ${BOLD}a) Tell git who you are${RESET}"
+    echo -e "     git config --global user.name  \"Your Name\""
+    echo -e "     git config --global user.email \"you@example.com\""
+    echo ""
+    echo -e "  ${BOLD}b) Install Node.js${RESET}"
+    echo -e "     nvm install --lts && nvm use --lts"
+    echo ""
+    echo -e "  ${BOLD}c) Sign into GitHub in VS Code${RESET}"
+    echo -e "     Click the account icon at the bottom-left of VS Code."
+    echo -e "     This syncs your settings and lets GitLens access private repos."
+    echo ""
+    echo -e "  ${BOLD}d) Restart iTerm2${RESET}"
+    echo -e "     Close this window and open iTerm2 to see your new prompt."
+    echo ""
+    echo -e "  ${DIM}Tip: When you want to learn about any command, run: tldr <commandname>${RESET}"
+    echo ""
+}
+
+print_tour

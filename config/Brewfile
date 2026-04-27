@@ -1,0 +1,37 @@
+# macbequick Brewfile
+# Secondary convenience — setup.sh drives installs directly for better progress output.
+# Use this to verify machine state: brew bundle check --file=config/Brewfile
+# Or install everything at once: brew bundle install --file=config/Brewfile
+
+tap "homebrew/bundle"
+tap "homebrew/cask-fonts"
+
+# ---- CLI Tools ----
+brew "git"
+brew "gh"
+brew "curl"
+brew "wget"
+brew "nvm"
+brew "starship"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+brew "fzf"
+brew "bat"
+brew "eza"
+brew "ripgrep"
+brew "fd"
+brew "jq"
+brew "tldr"
+brew "htop"
+brew "tree"
+brew "git-delta"
+
+# ---- Fonts ----
+cask "font-meslo-lg-nerd-font"
+
+# ---- Apps ----
+cask "signal"
+cask "discord"
+cask "tailscale"
+cask "iterm2"
+cask "visual-studio-code"
