@@ -7,11 +7,11 @@ install_apps() {
     section_header "Installing Apps"
 
     install_cask "1password"           "1Password"       "password manager"
-    install_cask "1password"           "1Password"       "password manager"
     install_cask "signal"              "Signal Desktop"  "encrypted messaging"
     install_cask "discord"             "Discord"         "voice + text chat for communities"
     install_cask "tailscale"           "Tailscale"       "personal VPN / remote access"
     install_cask "iterm2"              "iTerm2"          "better terminal for macOS"
+    install_cask "docker"               "Docker Desktop"  "containers and local dev environments"
     install_cask "visual-studio-code"  "VS Code"         "code editor"
 }
 

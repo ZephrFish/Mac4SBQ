@@ -24,6 +24,7 @@ CLI_TOOLS=(
     htop
     tree
     git-delta
+    pyenv
 )
 
 setup_terminal() {
@@ -35,6 +36,8 @@ setup_terminal() {
     _configure_starship
     _write_zshrc
     _configure_fzf
+    _install_rosetta
+    _configure_m5_defaults
     _configure_mac_defaults
 }
 
@@ -131,4 +134,56 @@ _configure_mac_defaults() {
     killall Finder 2>/dev/null || true
 
     ok "macOS defaults applied"
+}
+
+_install_rosetta() {
+    step "Checking Rosetta 2 (needed for some Intel-only tools on Apple Silicon)..."
+    if /usr/bin/pgrep -q oahd 2>/dev/null; then
+        skip "Rosetta 2 already installed"
+        return 0
+    fi
+    softwareupdate --install-rosetta --agree-to-license 2>&1 | tee -a "${MACBEQUICK_LOG}" || true
+    ok "Rosetta 2 installed"
+}
+
+_configure_m5_defaults() {
+    step "Applying Apple Silicon / M5 performance tweaks..."
+
+    # Dock: auto-hide, remove recent apps, speed up show/hide
+    defaults write com.apple.dock autohide -bool true
+    defaults write com.apple.dock autohide-delay -float 0
+    defaults write com.apple.dock autohide-time-modifier -float 0.4
+    defaults write com.apple.dock show-recents -bool false
+
+    # Faster window resize animations (M5 can handle instant)
+    defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+
+    # Disable automatic capitalization and smart punctuation in terminal contexts
+    defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+    defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+    defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+
+    # Screenshots: save to ~/Screenshots folder instead of Desktop
+    mkdir -p "${HOME}/Screenshots"
+    defaults write com.apple.screencapture location -string "${HOME}/Screenshots"
+    defaults write com.apple.screencapture type -string "png"
+    defaults write com.apple.screencapture disable-shadow -bool true
+
+    # Finder: list view by default, show full path in title
+    defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+    defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+    # Security: require password immediately after sleep/screensaver
+    defaults write com.apple.screensaver askForPassword -int 1
+    defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+    # Trackpad: enable tap-to-click
+    defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+    defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+    # Restart Dock + UI server to apply
+    killall Dock 2>/dev/null || true
+    killall SystemUIServer 2>/dev/null || true
+
+    ok "M5 / Apple Silicon tweaks applied"
 }

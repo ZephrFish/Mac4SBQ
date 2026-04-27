@@ -14,7 +14,7 @@ WHITE='\033[1;37m'
 RESET='\033[0m'
 
 _STEP_NUM=0
-_TOTAL_STEPS=4
+_TOTAL_STEPS=5
 
 # ---- Core print functions ----
 step() {

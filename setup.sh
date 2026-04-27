@@ -27,6 +27,8 @@ source "${SCRIPT_DIR}/lib/apps.sh"
 source "${SCRIPT_DIR}/lib/terminal.sh"
 # shellcheck source=lib/vscode.sh
 source "${SCRIPT_DIR}/lib/vscode.sh"
+# shellcheck source=lib/gitconfig.sh
+source "${SCRIPT_DIR}/lib/gitconfig.sh"
 
 # ---- EXIT trap: friendly message on unexpected failure ----
 _on_exit() {
@@ -51,6 +53,8 @@ main() {
     setup_terminal
 
     setup_vscode
+
+    setup_gitconfig
 
     # Guided tour — printed narrative, no blocking prompts
     source "${SCRIPT_DIR}/tour/tour.sh"
