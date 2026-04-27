@@ -23,6 +23,8 @@ print_tour() {
 
     _tour_header "1. Apps Installed"
     echo ""
+    _tour_item "1Password" "Your password manager. Save every password here and never reuse one again. Free for personal use."
+    _tour_item "1Password" "Your password manager. Save every password here and never reuse one again."
     _tour_item "Signal"    "End-to-end encrypted messaging. Use it for private conversations."
     _tour_item "Discord"   "Where developer communities live. Search for servers about whatever you're learning."
     _tour_item "Tailscale" "Creates a private network between your devices — great for accessing your home machine remotely."

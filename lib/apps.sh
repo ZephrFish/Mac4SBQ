@@ -6,6 +6,8 @@
 install_apps() {
     section_header "Installing Apps"
 
+    install_cask "1password"           "1Password"       "password manager"
+    install_cask "1password"           "1Password"       "password manager"
     install_cask "signal"              "Signal Desktop"  "encrypted messaging"
     install_cask "discord"             "Discord"         "voice + text chat for communities"
     install_cask "tailscale"           "Tailscale"       "personal VPN / remote access"

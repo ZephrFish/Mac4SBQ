@@ -30,6 +30,7 @@ brew "git-delta"
 cask "font-meslo-lg-nerd-font"
 
 # ---- Apps ----
+cask "1password"
 cask "signal"
 cask "discord"
 cask "tailscale"
