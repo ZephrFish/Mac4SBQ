@@ -101,7 +101,7 @@ print_tour() {
     echo -e "    ${BOLD}git init${RESET}           Start tracking a folder with git"
     echo -e "    ${BOLD}git status${RESET}         See what has changed (alias: gs)"
     echo -e "    ${BOLD}git add .${RESET}          Stage all changes to be committed (alias: ga .)"
-    echo -e "    ${BOLD}git commit -m "msg"${RESET} Save a snapshot with a description (alias: gc "msg")"
+    echo -e "    ${BOLD}git commit -m 'msg'${RESET} Save a snapshot with a description (alias: gc 'msg')"
     echo -e "    ${BOLD}git log${RESET}            See your commit history (alias: gl)"
     echo -e "    ${BOLD}git push${RESET}           Upload commits to GitHub (alias: gp)"
     echo -e "    ${BOLD}git pull${RESET}           Download latest changes from GitHub"
