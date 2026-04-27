@@ -24,6 +24,7 @@ CLI_TOOLS=(
     htop
     tree
     git-delta
+    thefuck
     pyenv
 )
 

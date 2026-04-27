@@ -47,6 +47,9 @@ eval "$(pyenv init -)"
 # CTRL+R = fuzzy history search   CTRL+T = fuzzy file picker
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# ---- thefuck — corrects mistyped commands ----
+eval "$(thefuck --alias)" 2>/dev/null || true
+
 # ---- Aliases ----
 
 # Navigation
