@@ -6,8 +6,12 @@
 setup_gitconfig() {
     section_header "Git & SSH Setup"
 
+    _configure_git_defaults
     _write_global_gitignore
     _setup_ssh_key
+    _run_gh_auth
+    _check_filevault
+    _setup_brew_autoupdate
 }
 
 _write_global_gitignore() {
@@ -106,4 +110,77 @@ _print_ssh_instructions() {
         echo -e "  ${CYAN}$(cat "${pubkey}")${RESET}"
         echo ""
     fi
+}
+
+_configure_git_defaults() {
+    step "Configuring global git defaults..."
+
+    # Sensible defaults that every new user needs but rarely discovers themselves
+    git config --global pull.rebase false          # merge on pull (less confusing than rebase for beginners)
+    git config --global init.defaultBranch main    # new repos start on 'main' not 'master'
+    git config --global core.editor "code --wait"  # VS Code as commit message editor
+    git config --global core.autocrlf input        # normalize line endings on commit
+    git config --global push.autoSetupRemote true  # git push works without -u origin branch
+
+    # macOS Keychain credential store — HTTPS git auth persists across sessions
+    git config --global credential.helper osxkeychain
+
+    ok "Git defaults configured"
+}
+
+_run_gh_auth() {
+    step "Checking GitHub CLI authentication..."
+
+    if gh auth status &>/dev/null 2>&1; then
+        skip "GitHub CLI already authenticated"
+        return 0
+    fi
+
+    echo ""
+    echo -e "  ${BOLD}GitHub Authentication${RESET}"
+    echo "  The GitHub CLI (gh) lets you push code, open pull requests, and"
+    echo "  manage repositories without typing your password every time."
+    echo ""
+    ask_continue "Sign into GitHub now? (Opens browser)"
+
+    gh auth login --web --git-protocol ssh 2>&1 | tee -a "${MACBEQUICK_LOG}" || \
+        warn "GitHub auth skipped — run 'gh auth login' later to authenticate"
+}
+
+_check_filevault() {
+    step "Checking FileVault disk encryption..."
+
+    local fv_status
+    fv_status="$(fdesetup status 2>/dev/null)"
+
+    if echo "${fv_status}" | grep -q "FileVault is On"; then
+        ok "FileVault is enabled — disk is encrypted"
+        return 0
+    fi
+
+    echo ""
+    echo -e "  ${YELLOW}[NOTICE]${RESET} FileVault is ${BOLD}not enabled${RESET} on this Mac."
+    echo "  FileVault encrypts your entire disk, protecting your data if your"
+    echo "  Mac is ever lost or stolen. It runs in the background and has no"
+    echo "  noticeable impact on performance on Apple Silicon."
+    echo ""
+    echo -e "  ${DIM}To enable: System Settings → Privacy & Security → FileVault → Turn On${RESET}"
+    echo ""
+}
+
+_setup_brew_autoupdate() {
+    step "Setting up Homebrew auto-update..."
+
+    # brew-autoupdate keeps formulae fresh in the background weekly
+    if brew autoupdate status 2>/dev/null | grep -q "running"; then
+        skip "Homebrew auto-update already configured"
+        return 0
+    fi
+
+    # Install brew-autoupdate tap if needed and start weekly updates
+    brew tap domt4/autoupdate 2>&1 | tee -a "${MACBEQUICK_LOG}" || true
+    brew autoupdate start 604800 --upgrade --cleanup 2>&1 | tee -a "${MACBEQUICK_LOG}" || \
+        warn "brew-autoupdate setup failed — run 'brew update && brew upgrade' periodically"
+
+    ok "Homebrew will auto-update weekly in the background"
 }
