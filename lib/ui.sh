@@ -105,6 +105,17 @@ ask_continue() {
     esac
 }
 
+# ---- Optional prompt (returns 1 if user says no, never exits) ----
+ask_optional() {
+    local question="${1:-Continue?}"
+    echo -ne "  ${BOLD}${question}${RESET} ${DIM}[Y/n]${RESET} "
+    read -r answer
+    case "${answer}" in
+        [Nn]*) return 1 ;;
+        *) return 0 ;;
+    esac
+}
+
 # ---- Spinner: animates while a background pid runs ----
 spinner() {
     local pid="$1"

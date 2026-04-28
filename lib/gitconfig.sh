@@ -141,10 +141,14 @@ _run_gh_auth() {
     echo "  The GitHub CLI (gh) lets you push code, open pull requests, and"
     echo "  manage repositories without typing your password every time."
     echo ""
-    ask_continue "Sign into GitHub now? (Opens browser)"
+
+    if ! ask_optional "Sign into GitHub now? (Opens browser)"; then
+        skip "GitHub auth skipped — run 'gh auth login' whenever you're ready"
+        return 0
+    fi
 
     gh auth login --web --git-protocol ssh 2>&1 | tee -a "${MACBEQUICK_LOG}" || \
-        warn "GitHub auth skipped — run 'gh auth login' later to authenticate"
+        warn "GitHub auth failed — run 'gh auth login' manually to retry"
 }
 
 _check_filevault() {

@@ -33,6 +33,7 @@ setup_terminal() {
 
     _install_cli_tools
     _install_nerd_font
+    _configure_iterm2_font
     _install_ohmyzsh
     _configure_starship
     _write_zshrc
@@ -57,6 +58,25 @@ _install_nerd_font() {
     fi
     brew install --cask font-meslo-lg-nerd-font 2>&1 | tee -a "${MACBEQUICK_LOG}"
     ok "Nerd Font installed"
+}
+
+_configure_iterm2_font() {
+    step "Configuring iTerm2 font (MesloLGM Nerd Font for Powerline symbols)..."
+
+    local plist="${HOME}/Library/Preferences/com.googlecode.iterm2.plist"
+
+    if [[ ! -f "${plist}" ]]; then
+        warn "iTerm2 hasn't been opened yet — open it once then re-run setup to auto-set the font"
+        return 0
+    fi
+
+    if /usr/libexec/PlistBuddy \
+            -c "Set :'New Bookmarks':0:'Normal Font' 'MesloLGMNerdFontMono-Regular 13'" \
+            "${plist}" 2>/dev/null; then
+        ok "iTerm2 default font set to MesloLGM Nerd Font"
+    else
+        warn "Could not auto-set iTerm2 font — set it manually: iTerm2 → Settings → Profiles → Text → Font → MesloLGM Nerd Font Mono"
+    fi
 }
 
 _install_ohmyzsh() {

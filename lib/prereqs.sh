@@ -41,10 +41,18 @@ _ensure_xcode_clt() {
         return 0
     fi
 
-    step "Installing Xcode Command Line Tools (a system dialog will appear)..."
+    echo ""
+    echo -e "  ${BOLD}Xcode Command Line Tools are required.${RESET}"
+    echo "  These provide git, compilers, and build tools that Homebrew needs."
+    echo "  You do NOT need the full Xcode IDE — just the Command Line Tools."
+    echo ""
+    echo -e "  ${DIM}A macOS dialog will appear — click 'Install' and wait for it to finish.${RESET}"
+    echo -e "  ${DIM}If no dialog appears, open a new terminal and run: xcode-select --install${RESET}"
+    echo ""
+
     xcode-select --install 2>&1 | tee -a "${MACBEQUICK_LOG}" || true
 
-    echo -ne "  Waiting for Xcode CLT installation to complete..."
+    echo -ne "  Waiting for installation to complete (this can take a few minutes)..."
     until xcode-select -p &>/dev/null; do
         sleep 3
         echo -ne "."
