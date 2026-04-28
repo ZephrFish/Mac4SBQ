@@ -96,7 +96,8 @@ _write_zshrc() {
 
     # Back up existing .zshrc if present
     if [[ -f "${HOME}/.zshrc" ]]; then
-        local backup="${HOME}/.zshrc.macbequick-backup-$(date +%Y%m%d%H%M%S)"
+        local backup
+        backup="${HOME}/.zshrc.macbequick-backup-$(date +%Y%m%d%H%M%S)"
         cp "${HOME}/.zshrc" "${backup}"
         step "Backed up existing ~/.zshrc to ${backup}"
     fi

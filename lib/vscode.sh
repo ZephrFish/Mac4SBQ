@@ -84,7 +84,8 @@ _write_vscode_settings() {
 
     if [[ -f "${settings_file}" ]]; then
         # Merge: existing settings take precedence; macbequick fills in gaps
-        local backup="${settings_file}.macbequick-backup-$(date +%Y%m%d%H%M%S)"
+        local backup
+        backup="${settings_file}.macbequick-backup-$(date +%Y%m%d%H%M%S)"
         cp "${settings_file}" "${backup}"
         step "Backed up existing VS Code settings to ${backup}"
         if command -v jq &>/dev/null; then
