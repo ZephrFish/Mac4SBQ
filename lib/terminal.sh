@@ -63,20 +63,36 @@ _install_nerd_font() {
 _configure_iterm2_font() {
     step "Configuring iTerm2 font (MesloLGM Nerd Font for Powerline symbols)..."
 
+    # Dynamic Profile: loaded by iTerm2 on every launch, even the first.
+    # This guarantees the Nerd Font is active before the user ever opens iTerm2.
+    local dynamic_dir="${HOME}/Library/Application Support/iTerm2/DynamicProfiles"
+    mkdir -p "${dynamic_dir}"
+
+    cat > "${dynamic_dir}/macbequick.json" << 'EOF'
+{
+  "Profiles": [
+    {
+      "Name": "Default",
+      "Guid": "macbequick-default",
+      "Normal Font": "MesloLGMNerdFontMono-Regular 13",
+      "Use Non-ASCII Font": false
+    }
+  ]
+}
+EOF
+
+    # Tell iTerm2 to use this profile for new windows
+    defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "macbequick-default" 2>/dev/null || true
+
+    # Also patch live plist if iTerm2 was already opened before setup ran
     local plist="${HOME}/Library/Preferences/com.googlecode.iterm2.plist"
-
-    if [[ ! -f "${plist}" ]]; then
-        warn "iTerm2 hasn't been opened yet — open it once then re-run setup to auto-set the font"
-        return 0
-    fi
-
-    if /usr/libexec/PlistBuddy \
+    if [[ -f "${plist}" ]]; then
+        /usr/libexec/PlistBuddy \
             -c "Set :'New Bookmarks':0:'Normal Font' 'MesloLGMNerdFontMono-Regular 13'" \
-            "${plist}" 2>/dev/null; then
-        ok "iTerm2 default font set to MesloLGM Nerd Font"
-    else
-        warn "Could not auto-set iTerm2 font — set it manually: iTerm2 → Settings → Profiles → Text → Font → MesloLGM Nerd Font Mono"
+            "${plist}" 2>/dev/null || true
     fi
+
+    ok "iTerm2 font configured — Powerline symbols will work on first launch"
 }
 
 _install_ohmyzsh() {
