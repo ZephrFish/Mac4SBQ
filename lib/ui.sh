@@ -116,6 +116,69 @@ ask_optional() {
     esac
 }
 
+# ---- Interactive app-selection toggle menu ----
+# Usage: app_selection_menu "cask_id|Display Name|description" ...
+# Result: global SELECTED_APPS array is populated with chosen cask IDs.
+# All apps are ON by default (opt-out). Non-interactive stdin selects all.
+#
+# @decision DEC-UI-APPSEL-001
+# @title Opt-out app-selection menu with non-interactive fallback
+# @status accepted
+# @rationale An opt-out model (all apps selected by default) gives a frictionless
+#   first-run experience — the user just presses Enter to install everything.
+#   Piped / non-interactive runs (CI, tests) skip the menu entirely and select all,
+#   ensuring the installer stays scriptable without special flags.
+app_selection_menu() {
+    local -a entries=("$@")
+    local count=${#entries[@]}
+    local -a selected
+
+    for (( i=0; i<count; i++ )); do selected[i]=1; done
+
+    # Non-interactive fallback: select all and return
+    if [[ ! -t 0 ]]; then
+        SELECTED_APPS=()
+        for (( i=0; i<count; i++ )); do
+            SELECTED_APPS+=("${entries[i]%%|*}")
+        done
+        return 0
+    fi
+
+    while true; do
+        echo ""
+        echo -e "  ${BOLD}Select apps to install${RESET} ${DIM}(type a number to toggle, 'all', 'none', or press Enter to confirm)${RESET}"
+        echo ""
+        for (( i=0; i<count; i++ )); do
+            local entry="${entries[i]}"
+            local rest="${entry#*|}"
+            local display="${rest%%|*}"; local desc="${rest#*|}"
+            local mark
+            [[ ${selected[i]} -eq 1 ]] && mark="${GREEN}[✓]${RESET}" || mark="${DIM}[ ]${RESET}"
+            printf "  %b %-2s %-24s %s\n" "${mark}" "$((i+1))." "${display}" "— ${desc}"
+        done
+        echo ""
+        echo -ne "  ${DIM}>${RESET} "
+        read -r choice
+        case "${choice}" in
+            ""|done) break ;;
+            all)  for (( i=0; i<count; i++ )); do selected[i]=1; done ;;
+            none) for (( i=0; i<count; i++ )); do selected[i]=0; done ;;
+            *[0-9]*)
+                if [[ "${choice}" =~ ^[0-9]+$ ]]; then
+                    local idx=$(( choice - 1 ))
+                    if (( idx >= 0 && idx < count )); then
+                        selected[idx]=$(( 1 - selected[idx] ))
+                    fi
+                fi ;;
+        esac
+    done
+
+    SELECTED_APPS=()
+    for (( i=0; i<count; i++ )); do
+        [[ ${selected[i]} -eq 1 ]] && SELECTED_APPS+=("${entries[i]%%|*}")
+    done
+}
+
 # ---- Spinner: animates while a background pid runs ----
 spinner() {
     local pid="$1"
