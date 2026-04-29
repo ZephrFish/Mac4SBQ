@@ -167,9 +167,9 @@ _install_node_lts() {
         return 0
     fi
 
-    # shellcheck source=/dev/null
     export NVM_DIR="${HOME}/.nvm"
     mkdir -p "${NVM_DIR}"
+    # shellcheck source=/dev/null
     source "${nvm_sh}"
 
     if nvm ls --no-colors 2>/dev/null | grep -q "lts/\|v[0-9]"; then
