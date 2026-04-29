@@ -7,6 +7,13 @@
 
 set -euo pipefail
 
+# Parse --dry-run flag
+DRY_RUN=0
+for arg in "$@"; do
+    [[ "${arg}" == "--dry-run" ]] && DRY_RUN=1
+done
+export DRY_RUN
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ---- Log setup ----

@@ -47,6 +47,11 @@ _APP_ENTRIES=(
 install_apps() {
     section_header "Installing Apps"
 
+    if [[ ${DRY_RUN:-0} -eq 1 ]]; then
+        step "[DRY RUN] Would show app selection menu and install chosen apps"
+        return 0
+    fi
+
     app_selection_menu "${_APP_ENTRIES[@]}"
 
     if [[ ${#SELECTED_APPS[@]} -eq 0 ]]; then

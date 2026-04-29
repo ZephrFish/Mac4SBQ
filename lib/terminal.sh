@@ -31,6 +31,11 @@ CLI_TOOLS=(
 setup_terminal() {
     section_header "Setting Up Your Terminal"
 
+    if [[ ${DRY_RUN:-0} -eq 1 ]]; then
+        step "[DRY RUN] Would install CLI tools, oh-my-zsh, Starship, Node.js LTS, and configure macOS defaults"
+        return 0
+    fi
+
     _install_cli_tools
     _install_nerd_font
     _configure_iterm2_font
@@ -38,6 +43,7 @@ setup_terminal() {
     _configure_starship
     _write_zshrc
     _configure_fzf
+    _install_node_lts
     _install_rosetta
     _configure_m5_defaults
     _configure_mac_defaults
@@ -148,6 +154,32 @@ _configure_fzf() {
         --key-bindings --completion --no-update-rc --no-bash --no-fish \
         2>&1 | tee -a "${MACBEQUICK_LOG}" || true
     ok "fzf key bindings configured"
+}
+
+_install_node_lts() {
+    step "Installing Node.js LTS via nvm..."
+
+    local nvm_sh
+    nvm_sh="$(brew --prefix nvm 2>/dev/null)/nvm.sh"
+
+    if [[ ! -f "${nvm_sh}" ]]; then
+        warn "nvm not found — run 'nvm install --lts' manually after restarting your terminal"
+        return 0
+    fi
+
+    # shellcheck source=/dev/null
+    export NVM_DIR="${HOME}/.nvm"
+    mkdir -p "${NVM_DIR}"
+    source "${nvm_sh}"
+
+    if nvm ls --no-colors 2>/dev/null | grep -q "lts/\|v[0-9]"; then
+        skip "Node.js already installed via nvm"
+        return 0
+    fi
+
+    nvm install --lts 2>&1 | tee -a "${MACBEQUICK_LOG}"
+    nvm alias default lts/* 2>&1 | tee -a "${MACBEQUICK_LOG}" || true
+    ok "Node.js LTS installed and set as default"
 }
 
 _configure_mac_defaults() {

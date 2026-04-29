@@ -24,6 +24,11 @@ VSCODE_EXTENSIONS=(
 setup_vscode() {
     section_header "Configuring VS Code"
 
+    if [[ ${DRY_RUN:-0} -eq 1 ]]; then
+        step "[DRY RUN] Would install VS Code extensions and merge settings"
+        return 0
+    fi
+
     if ! command -v code &>/dev/null; then
         warn "'code' CLI not found. Open VS Code once, then run setup.sh again to install extensions."
         warn "VS Code > Command Palette > 'Shell Command: Install code command in PATH'"

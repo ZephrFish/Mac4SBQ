@@ -4,6 +4,11 @@
 # Homebrew are bootstrapped here so every downstream lib can assume both exist.
 
 check_prereqs() {
+    if [[ ${DRY_RUN:-0} -eq 1 ]]; then
+        step "[DRY RUN] Would check macOS version, disk space, network, Xcode CLT, and Homebrew"
+        return 0
+    fi
+
     step "Checking macOS version..."
     if [[ "$(uname)" != "Darwin" ]]; then
         fail "This script only runs on macOS."

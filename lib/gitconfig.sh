@@ -6,12 +6,51 @@
 setup_gitconfig() {
     section_header "Git & SSH Setup"
 
+    if [[ ${DRY_RUN:-0} -eq 1 ]]; then
+        step "[DRY RUN] Would configure git identity, SSH key, global gitignore, and gh auth"
+        return 0
+    fi
+
+    _prompt_git_identity
     _configure_git_defaults
     _write_global_gitignore
     _setup_ssh_key
     _run_gh_auth
     _check_filevault
     _setup_brew_autoupdate
+}
+
+_prompt_git_identity() {
+    step "Configuring your git identity..."
+
+    local current_name current_email
+    current_name="$(git config --global user.name 2>/dev/null || true)"
+    current_email="$(git config --global user.email 2>/dev/null || true)"
+
+    if [[ -n "${current_name}" && -n "${current_email}" ]]; then
+        skip "Git identity already set: ${current_name} <${current_email}>"
+        return 0
+    fi
+
+    echo ""
+    echo -e "  ${BOLD}Git needs to know who you are.${RESET}"
+    echo "  Your name and email are attached to every commit you make."
+    echo "  Use the same email as your GitHub account."
+    echo ""
+
+    if [[ -z "${current_name}" ]]; then
+        echo -ne "  ${BOLD}Your full name${RESET} ${DIM}(e.g. Jane Smith)${RESET}: "
+        read -r git_name
+        [[ -n "${git_name}" ]] && git config --global user.name "${git_name}"
+    fi
+
+    if [[ -z "${current_email}" ]]; then
+        echo -ne "  ${BOLD}Your email${RESET} ${DIM}(use your GitHub email)${RESET}: "
+        read -r git_email
+        [[ -n "${git_email}" ]] && git config --global user.email "${git_email}"
+    fi
+
+    ok "Git identity set: $(git config --global user.name 2>/dev/null) <$(git config --global user.email 2>/dev/null)>"
 }
 
 _write_global_gitignore() {
