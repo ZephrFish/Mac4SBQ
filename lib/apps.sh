@@ -17,6 +17,9 @@ _APP_ENTRIES=(
     "iterm2|iTerm2|Better terminal for macOS"
     "docker-desktop|Docker Desktop|Containers and local dev"
     "visual-studio-code|VS Code|Code editor"
+    "rectangle|Rectangle|Window snapping and tiling"
+    "raycast|Raycast|Launcher, clipboard history, and productivity tools"
+    "postman|Postman|API testing and development"
 )
 
 install_apps() {
